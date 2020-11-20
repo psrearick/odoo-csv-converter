@@ -59,18 +59,30 @@ if (files.pathExists(out)){
 const status = new Spinner('Processing file, please wait...');
 status.start();
 
-const convert = async ( file, variants ) => {
+const convert = async ( file, variants, out ) => {
+  const header = [
+    {id: 'default_code', title: 'default_code'},
+    {id: 'name', title: 'name'},
+    {id: 'list_price', title: 'list_price'},
+    {id: 'standard_price', title: 'standard_price'},
+    {id: 'barcode', title: 'barcode'},
+    {id: 'purchase_ok', title: 'purchase_ok'},
+    {id: 'sale_ok', title: 'sale_ok'},
+    {id: 'categ_id', title: 'categ_id'},
+    {id: 'attribute_line_ids/attribute_id', title: 'attribute_line_ids/attribute_id'},
+    {id: 'attribute_line_ids/value_ids', title: 'attribute_line_ids/value_ids'}
+  ]
   const variantData = await processData.readFile( variants );
   const variantList = await processData.convertVariants( variantData );
   const productData = await processData.readFile( file );
   const productList = await processData.convertProducts( productData, variantList );
+  return await processData.writeFile(out, header, productList);
 };
 
-
-convert(file, variants)
+convert(file, variants, out)
   .then(
-  () => {
-    status.stop();
+    () => {
+      status.stop();
   }
 );
 
